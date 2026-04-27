@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 
 option(KOMELIA_SUPERBUILD "superbuild" ON)
-option(KOMELIA_SUPERBUILD_ENABLE_LTO "enable LTO" OFF)
 
 if (KOMELIA_SUPERBUILD)
     project(komelia_superbuild C CXX)
@@ -30,13 +29,7 @@ if (KOMELIA_SUPERBUILD)
     if (MESON_CROSS_FILE)
         set(MESON_CROSS_FILE_ARG --cross-file=${MESON_CROSS_FILE})
     endif ()
-    set(EP_MESON_ARGS ${MESON_CROSS_FILE_ARG}
-            --prefix=<INSTALL_DIR>
-            --libdir=lib
-            --buildtype=release
-            --prefer-static
-            -Db_staticpic=true
-    )
+    set(EP_MESON_ARGS ${MESON_CROSS_FILE_ARG} --default-library shared --prefix=<INSTALL_DIR> --libdir=lib --buildtype=release)
 
     set(EP_CMAKE_ARGS
             -DANDROID_ABI=${ANDROID_ABI}
@@ -48,13 +41,8 @@ if (KOMELIA_SUPERBUILD)
             -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
             -DCMAKE_FIND_ROOT_PATH=${CMAKE_FIND_ROOT_PATH}
             -DCMAKE_FIND_LIBRARY_SUFFIXES=${CMAKE_FIND_LIBRARY_SUFFIXES}
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+            -DBUILD_SHARED_LIBS=ON
             -DBUILD_TESTING=OFF)
-
-   if(KOMELIA_SUPERBUILD_ENABLE_LTO)
-       set(EP_CMAKE_ARGS ${EP_CMAKE_ARGS} -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON)
-       set(EP_MESON_ARGS ${EP_MESON_ARGS} -Db_lto=true)
-   endif()
 
     include("cmake/external/zlib.cmake")
     include("cmake/external/brotli.cmake")
@@ -70,10 +58,10 @@ if (KOMELIA_SUPERBUILD)
     include("cmake/external/jxl.cmake")
     include("cmake/external/png.cmake")
     include("cmake/external/webp.cmake")
-    include("cmake/external/tiff.cmake")
     include("cmake/external/dav1d.cmake")
     include("cmake/external/de265.cmake")
     include("cmake/external/heif.cmake")
+    include("cmake/external/tiff.cmake")
 
     include("cmake/external/vips.cmake")
     include("cmake/external/onnxruntime.cmake")
