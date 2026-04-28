@@ -29,12 +29,16 @@ import snd.komelia.ui.common.menus.SeriesMenuActions
 import snd.komelia.ui.series.SeriesFilter
 import snd.komelia.ui.series.SeriesFilterState
 import snd.komga.client.common.KomgaPageRequest
+import snd.komga.client.common.KomgaSort.Direction.ASC
 import snd.komga.client.common.KomgaSort.KomgaSeriesSort
+import snd.komga.client.common.KomgaSort.Order
 import snd.komga.client.common.Page
 import snd.komga.client.library.KomgaLibrary
 import snd.komga.client.search.allOfSeries
 import snd.komga.client.series.KomgaSeries
 import snd.komga.client.sse.KomgaEvent
+
+private const val SERIES_RANDOM_SORT = "random"
 
 class LibrarySeriesTabState(
     private val seriesApi: KomgaSeriesApi,
@@ -224,6 +228,7 @@ class LibrarySeriesTabState(
         TITLE_DESC(KomgaSeriesSort.byTitleDesc()),
         DATE_ADDED_DESC(KomgaSeriesSort.byCreatedDateDesc()),
         DATE_ADDED_ASC(KomgaSeriesSort.byCreatedDateAsc()),
+        RANDOM(KomgaSeriesSort(listOf(Order(SERIES_RANDOM_SORT, ASC)))),
         //        FOLDER_NAME_ASC(KomgaSeriesSort.byFolderNameAsc()),
 //        FOLDER_NAME_DESC(KomgaSeriesSort.byFolderNameDesc()),
 //        BOOKS_COUNT_ASC(KomgaSeriesSort.byBooksCountAsc()),
