@@ -112,6 +112,12 @@ class LibrarySeriesTabState(
 
     fun seriesMenuActions() = SeriesMenuActions(seriesApi, notifications, taskEmitter, screenModelScope)
 
+    fun openRandomSeries(onSeriesSelected: (KomgaSeries) -> Unit) {
+        notifications.runCatchingToNotifications(screenModelScope) {
+            getRandomSeries(filterState.state.value)?.let(onSeriesSelected)
+        }
+    }
+
     fun onPageSizeChange(pageSize: Int) {
         pageLoadSize.value = pageSize
         screenModelScope.launch { settingsRepository.putSeriesPageLoadSize(pageSize) }
@@ -175,6 +181,23 @@ class LibrarySeriesTabState(
                 sort = filter.sortOrder.komgaSort
             )
         )
+    }
+
+    private suspend fun getRandomSeries(filter: SeriesFilter): KomgaSeries? {
+        val condition = allOfSeries {
+            library.value?.let { library { isEqualTo(it.id) } }
+            filter.addConditionTo(this)
+        }
+
+        return seriesApi.getSeriesList(
+            conditionBuilder = condition,
+            fulltextSearch = filter.searchTerm.ifBlank { null },
+            pageRequest = KomgaPageRequest(
+                size = 1,
+                pageIndex = 0,
+                sort = SeriesSort.RANDOM.komgaSort
+            )
+        ).content.firstOrNull()
     }
 
     private fun delayLoadState(): Deferred<Unit> {
