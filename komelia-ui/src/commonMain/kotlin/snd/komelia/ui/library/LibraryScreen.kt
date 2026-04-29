@@ -12,7 +12,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -100,6 +99,9 @@ class LibraryScreen(
                                 randomSeriesEnabled = vm.seriesTabState.totalSeriesCount > 0,
                                 onRandomSeriesClick = {
                                     vm.seriesTabState.openRandomSeries { navigator.push(seriesScreen(it)) }
+                                },
+                                onRandomUnreadSeriesClick = {
+                                    vm.seriesTabState.openRandomUnreadSeries { navigator.push(seriesScreen(it)) }
                                 }
                             )
                         }
@@ -234,6 +236,7 @@ fun LibraryToolBar(
     onReadListsClick: () -> Unit,
     randomSeriesEnabled: Boolean,
     onRandomSeriesClick: () -> Unit,
+    onRandomUnreadSeriesClick: () -> Unit,
 ) {
     val chipColors = AppFilterChipDefaults.filterChipColors()
     val strings = LocalStrings.current
@@ -269,15 +272,6 @@ fun LibraryToolBar(
             Spacer(Modifier.width(5.dp))
         }
 
-        if (currentTab == SERIES) item {
-            TextButton(
-                onClick = onRandomSeriesClick,
-                enabled = randomSeriesEnabled,
-            ) {
-                Text(strings.seriesFilter.sortRandom)
-            }
-        }
-
         if (collectionsCount > 0 || readListsCount > 0) item {
             FilterChip(
                 onClick = onBrowseClick,
@@ -303,6 +297,28 @@ fun LibraryToolBar(
                 onClick = onReadListsClick,
                 selected = currentTab == READ_LISTS,
                 label = { Text("Read Lists") },
+                colors = chipColors,
+                border = null,
+            )
+        }
+
+        item {
+            FilterChip(
+                onClick = onRandomSeriesClick,
+                enabled = randomSeriesEnabled,
+                selected = false,
+                label = { Text(strings.seriesFilter.sortRandom) },
+                colors = chipColors,
+                border = null,
+            )
+        }
+
+        item {
+            FilterChip(
+                onClick = onRandomUnreadSeriesClick,
+                enabled = randomSeriesEnabled,
+                selected = false,
+                label = { Text(strings.seriesFilter.randomUnread) },
                 colors = chipColors,
                 border = null,
             )

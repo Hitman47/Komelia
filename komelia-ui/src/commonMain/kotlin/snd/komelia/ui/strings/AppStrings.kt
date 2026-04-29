@@ -443,6 +443,7 @@ data class SeriesFilterStrings(
     val search: String,
     val sort: String,
     val sortRandom: String,
+    val randomUnread: String,
     val sortTitleAsc: String,
     val sortTitleDesc: String,
     val sortDateAddedAsc: String,

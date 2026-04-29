@@ -23,6 +23,7 @@ val EnStrings = AppStrings(
 
         sort = "Sort by",
         sortRandom = "Random",
+        randomUnread = "Random unread",
         sortTitleAsc = "Title Ascending",
         sortTitleDesc = "Title Descending",
         sortDateAddedAsc = "Oldest Added",

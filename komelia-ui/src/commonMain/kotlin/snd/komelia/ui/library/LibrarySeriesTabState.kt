@@ -28,6 +28,8 @@ import snd.komelia.ui.LoadState
 import snd.komelia.ui.common.menus.SeriesMenuActions
 import snd.komelia.ui.series.SeriesFilter
 import snd.komelia.ui.series.SeriesFilterState
+import snd.komga.client.book.KomgaReadStatus.IN_PROGRESS
+import snd.komga.client.book.KomgaReadStatus.UNREAD
 import snd.komga.client.common.KomgaPageRequest
 import snd.komga.client.common.KomgaSort.Direction.ASC
 import snd.komga.client.common.KomgaSort.KomgaSeriesSort
@@ -39,6 +41,7 @@ import snd.komga.client.series.KomgaSeries
 import snd.komga.client.sse.KomgaEvent
 
 private const val SERIES_RANDOM_SORT = "random"
+private val SERIES_UNREAD_STATUSES = listOf(UNREAD, IN_PROGRESS)
 
 class LibrarySeriesTabState(
     private val seriesApi: KomgaSeriesApi,
@@ -115,6 +118,12 @@ class LibrarySeriesTabState(
     fun openRandomSeries(onSeriesSelected: (KomgaSeries) -> Unit) {
         notifications.runCatchingToNotifications(screenModelScope) {
             getRandomSeries(filterState.state.value)?.let(onSeriesSelected)
+        }
+    }
+
+    fun openRandomUnreadSeries(onSeriesSelected: (KomgaSeries) -> Unit) {
+        notifications.runCatchingToNotifications(screenModelScope) {
+            getRandomSeries(filterState.state.value.copy(readStatus = SERIES_UNREAD_STATUSES))?.let(onSeriesSelected)
         }
     }
 
